@@ -13,9 +13,15 @@ runs:
         python -m pip install --upgrade pip
         pip install marko
       shell: bash
-
+      
+    - name: Checkout Static Site Generator Repository
+      uses: actions/checkout@v2
+      with:
+        repository: hydrol0x/static-site-generator
+        path: static-site-generator-repo
+      
     - name: Convert Markdown to HTML
-      run: python ./static-site-generator.py
+      run: python ../static-site-generator-repo/static-site-generator.py
       shell: bash
 
     - name: Commit and Push Changes
