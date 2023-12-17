@@ -2,7 +2,7 @@ import marko
 from pathlib import Path
 
 posts_dir = Path("./posts")
-dist_dir = Path("./dist")
+dist_dir = Path("./post")
 
 # Create the dist directory if it does not exist
 dist_dir.mkdir(exist_ok=True)
