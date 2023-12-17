@@ -1,0 +1,5 @@
+name: "Blog static site generator"
+description: "Converts Markdown files to HTML using a Python script for static site generation for my blog."
+runs:
+  using: "python"
+  main: "static-site-generator.py"
