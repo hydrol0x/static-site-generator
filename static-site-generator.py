@@ -1,5 +1,6 @@
 import marko
 import sass
+from bs4 import BeautifulSoup
 from pathlib import Path
 import os
 
@@ -39,9 +40,11 @@ dist_dir.mkdir(exist_ok=True)
 # Get the latest modification time of the elements folder
 elements_mod_time = get_latest_mod_time(elements_dir)
 
+posts = []
 for post_path in posts_dir.glob("*.md"):
     html_file_name = post_path.with_suffix('.html').name
     html_file_path = dist_dir / html_file_name
+    posts.append(str(html_file_path.stem))
 
     # Check if the html file exists and compare modification times
     should_regenerate = not html_file_path.exists() or post_path.stat().st_mtime > html_file_path.stat().st_mtime
@@ -75,3 +78,21 @@ with open('index.css', "w") as css_file:
 
 with open('index.css', "a") as file:
     file.write(generate_nav_bar_css())
+
+# generate index.html, i.e add new posts
+with open('elements/index/index.html', "r") as file:
+    soup = BeautifulSoup(file, 'html.parser')
+
+content_section = soup.find('section', class_='content')
+
+post_list = soup.new_tag('ul')
+for post in posts:
+    link = soup.new_tag("a", href=f'post/{post}')
+    link.string = post
+    post_tag = soup.new_tag("li")
+    post_tag.insert(0,link)
+    post_list.append(post_tag)
+content_section.insert(0, post_list)
+
+with open('index.html', "w") as file:
+    file.write(str(soup.prettify()))
