@@ -1,6 +1,9 @@
 import marko
 from pathlib import Path
 
+def generate_nav_bar():
+    pass
+
 posts_dir = Path("./posts")
 dist_dir = Path("./post")
 
@@ -21,3 +24,6 @@ for post_path in posts_dir.glob("*.md"):
         # Write the HTML content to the corresponding file
         with open(html_file_path, 'w', encoding='utf-8') as file:
             file.write(html_content)
+
+with open('test.html', 'w') as file:
+    file.write("<p> test </p>")
