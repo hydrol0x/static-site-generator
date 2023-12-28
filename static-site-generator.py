@@ -1,8 +1,12 @@
 import marko
+import markdown
 import sass
 from bs4 import BeautifulSoup
 from pathlib import Path
 import os
+
+# TODO: for things like description and date posted etc. i can include some kind of delimiter in
+# md file and then parse that in here before runnign marko on it, so no need to extend marko etc
 
 
 def generate_head() -> str:
@@ -53,16 +57,24 @@ for post_path in posts_dir.glob("*.md"):
     print(f"processing {post_path}")
     # Read the Markdown file and convert it to HTML
     with open(post_path, "r", encoding="utf-8") as file:
-        html_content = marko.convert(file.read())
+        # html_content = marko.convert(file.read())
+        html_content = markdown.markdown(file.read())
 
     # Write the HTML content to the corresponding file
     with open(html_file_path, "w", encoding="utf-8") as file:
         file.write("<!DOCTYPE html>\n")
         file.write('<html lang="en">\n')
         file.write(generate_head())
+        file.write("<body>")
+        file.write(
+            '<link rel="stylesheet" href="../md.css" />'
+        )  # TODO: make this better
         file.write(generate_nav_bar_html())
+        file.write('<section class="md-content">')
         file.write(html_content)
+        file.write("</section>")
         file.write(generate_footer_html())
+        file.write("</body>")
         file.write("\n</html>")
 
 # generate css
@@ -77,6 +89,12 @@ with open("index.css", "w") as css_file:
 with open("index.css", "a") as file:
     file.write(generate_nav_bar_css())
     file.write(generate_footer_css())
+
+with open("elements/md/md.css", "r") as css_file:
+    md_css = css_file.read()
+
+with open("md.css", "w") as css_file:
+    css_file.write(md_css)
 
 # generate index.html, i.e add new posts
 with open("elements/index/index.html", "r") as file:
